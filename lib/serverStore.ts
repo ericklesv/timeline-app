@@ -65,13 +65,7 @@ function isoDay(d: Date) {
 
 // --- Events ---
 export async function listEvents(): Promise<EventItem[]> {
-  const items = await readJson<EventItem[]>(EVENTS_FILE, []);
-  if (items.length === 0) {
-    const seeded = seed();
-    await writeJson(EVENTS_FILE, seeded);
-    return seeded;
-  }
-  return items;
+  return readJson<EventItem[]>(EVENTS_FILE, []);
 }
 
 export async function saveEvents(events: EventItem[]) {
