@@ -12,25 +12,44 @@ import {
 } from "@/lib/telegram";
 import type { EventItem } from "@/types";
 
+const TIMEZONE = "America/Sao_Paulo";
+
+function getTZParts(d: Date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(d);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00";
+  return {
+    year: get("year"),
+    month: get("month"),
+    day: get("day"),
+    hour: get("hour"),
+    minute: get("minute"),
+  };
+}
+
 function isoDay(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
+  const p = getTZParts(d);
+  return `${p.year}-${p.month}-${p.day}`;
 }
 
 function toDateTime(ev: EventItem): Date {
-  const [y, m, d] = ev.date.split("-").map(Number);
   if (ev.time) {
-    const [hh, mm] = ev.time.split(":").map(Number);
-    return new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0);
+    // Interpret event date+time in Brazil's timezone (UTC-3, no DST since 2019)
+    return new Date(`${ev.date}T${ev.time}:00-03:00`);
   }
-  return new Date(y, (m ?? 1) - 1, d ?? 1);
+  return new Date(`${ev.date}T00:00:00-03:00`);
 }
 
 function hhmm(d: Date) {
-  return `${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes()
-  ).padStart(2, "0")}`;
+  const p = getTZParts(d);
+  return `${p.hour}:${p.minute}`;
 }
 
 function addMinutesHHMM(hhmmStr: string, mins: number) {
