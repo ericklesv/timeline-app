@@ -11,6 +11,7 @@ import {
   eventIsToday,
   fmtDayLabel,
   fmtTime,
+  isBeforeToday,
   isOverdue,
   toDateTime,
 } from "@/lib/date";
@@ -267,7 +268,7 @@ function groupForTimeline(events: EventItem[]) {
   const sorted = [...events].sort(compareEvents);
   // urgent + today first
   const today = sorted.filter((e) => eventIsToday(e));
-  const upcoming = sorted.filter((e) => !eventIsToday(e));
+  const upcoming = sorted.filter((e) => !eventIsToday(e) && !isBeforeToday(e));
 
   // sort today: urgent first, then by time
   today.sort((a, b) => {

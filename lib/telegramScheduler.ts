@@ -25,11 +25,14 @@ function getTZParts(d: Date) {
     hour12: false,
   }).formatToParts(d);
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00";
+  // Some Node.js/V8 versions return "24" for midnight with hour12: false
+  const rawHour = get("hour");
+  const hour = rawHour === "24" ? "00" : rawHour;
   return {
     year: get("year"),
     month: get("month"),
     day: get("day"),
-    hour: get("hour"),
+    hour,
     minute: get("minute"),
   };
 }

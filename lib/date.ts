@@ -58,6 +58,11 @@ export function eventIsToday(ev: EventItem) {
   return isToday(toDateTime(ev));
 }
 
+export function isBeforeToday(ev: EventItem) {
+  const d = toDateTime(ev);
+  return startOfDay(d) < startOfDay(new Date());
+}
+
 export function compareEvents(a: EventItem, b: EventItem) {
   return toDateTime(a).getTime() - toDateTime(b).getTime();
 }

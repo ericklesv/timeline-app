@@ -89,6 +89,7 @@ export function buildDailyDigest(events: EventItem[], now = new Date()): string 
     return at.localeCompare(bt);
   });
   const dateLabel = now.toLocaleDateString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
     weekday: "long",
     day: "2-digit",
     month: "long",
